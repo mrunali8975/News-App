@@ -44,22 +44,24 @@ const Homescreen = ({navigation}) => {
   const {user, logout} = useContext(AuthContext);
 
   return (
-    <View style={{marginTop: 5}}>
+    <View style={{marginTop: 5,}}>
       <View style={styles.container}>
         {refreshing ? <ActivityIndicator /> : null}
 
         <View style={{flex:1,flexDirection:'row',justifyContent:'space-between',marginBottom:50}}>
             {/* Calling logout method from firebase */}
+         
+            <Pressable onPress={()=>navigation.navigate('SeachProduct')}>
+            <Text style={{height:35,width:'100%',fontSize:15,fontWeight:'800',padding:7,textAlign:'center',borderRadius:10,borderWidth:2}}>
+            Search Data
+            </Text>
+          </Pressable>
           <Pressable onPress={() => logout()}>  
            
           <Text style={{height:35,width:'100%',fontSize:15,fontWeight:'800',padding:6,borderRadius:10,borderWidth:2}}>Logout</Text>
 
           </Pressable>
-          <Pressable onPress={()=>navigation.navigate('SeachProduct')}>
-            <Text style={{height:35,width:'100%',fontSize:15,fontWeight:'800',padding:7,textAlign:'center',borderRadius:10,borderWidth:2}}>
-            Search Data
-            </Text>
-          </Pressable>
+         
         </View>
         {/* Grid view */}
         <FlatGrid

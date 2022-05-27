@@ -1,6 +1,8 @@
 import {AuthContext} from '../navigation/AuthProvider';
 import React, {useState, useContext} from 'react';
 import {Formik} from 'formik';
+const staticImage = require('.assets/loginlogo.png');
+
 import {
   View,
   Text,
@@ -8,6 +10,8 @@ import {
   TouchableOpacity,
   TextInput,
   Button,
+  Pressable,
+  Image,
 } from 'react-native';
 import FormButton from '../../components/FormButton';
 import * as yup from 'yup';
@@ -26,14 +30,18 @@ export default function LoginScreen({navigation}) {
       .required('Email Address is Required'),
     password: yup
       .string()
-      .min(8, ({min}) => `Password must be at least ${min} characters`)
       .required('Password is required'),
   });
 
   return (
     <View style={styles.container}>
+      <Image
+        source={{
+          uri: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRntg-JsZoMsj4dO_h8eves6NntF1N0xx74EYcwbuEviq1FO0tt9m7bKvuxn8OozlspqSE&usqp=CAU',
+        }}
+        style={styles.loginImage}
+      />
       <Text style={styles.title}>NEWS INDIA</Text>
-      <Text style={styles.text}>Welcome to News app</Text>
 
       {/* Form Input */}
       <Formik
@@ -75,68 +83,71 @@ export default function LoginScreen({navigation}) {
               <Text style={styles.errorText}>{errors.password}</Text>
             )}
             {/* login function called from authprovider */}
-            <TouchableOpacity
-            
-             style={styles.btn}
-             onPress={() => {
-               handleSubmit, login(values.email, values.password);
-             }}
-            
-             disabled={!isValid}>
-               <Text style={styles.btntext}>Login</Text>
-
-            </TouchableOpacity>
-            {/* <Button
-            style={styles.btn}
+          
+            <Pressable
+              style={styles.btn}
               onPress={() => {
                 handleSubmit, login(values.email, values.password);
               }}
-              title="Login"
-              disabled={!isValid}
-            /> */}
+              disabled={!isValid}>
+              <Text style={styles.text}>Login</Text>
+            </Pressable>
           </>
         )}
       </Formik>
 
-     
-{/* navigation.navigate() accepts the value of the screen to navigate to sign up page, */}
+      {/* navigation.navigate() accepts the value of the screen to navigate to sign up page, */}
       <TouchableOpacity
         style={styles.navButton}
         onPress={() => navigation.navigate('Signup')}>
-        <Text style={styles.navButtonText}>New user? Join here</Text>
+        <Text style={styles.navButtonText}>
+          Dont't have an account? Sign up.
+        </Text>
       </TouchableOpacity>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
+  loginImage: {
+    marginTop: 1,
+    width: 200,
+    height: 200,
+    marginBottom: 10,
+  },
+
   title: {
     fontSize: 40,
     alignItems: 'center',
     fontWeight: '900',
     color: 'black',
-    marginBottom: 80,
   },
-  btntext:
-  {
-fontSize:15,fontWeight:'800'
+  btntext: {
+    fontSize: 15,
+    fontWeight: '800',
   },
-  btn:
-  {
-borderRadius:20,
-borderWidth:2,padding:10,
+  btn: {
+    borderRadius: 15,
+    borderWidth: 2,
+    padding: 1,
+    width: '60%',
+    color: '#f9f9f9',
+    backgroundColor: '#457b9d',
+    borderColor: 'gray',
   },
   container: {
-    backgroundColor: '#f5f5f5',
-
+    backgroundColor: '#a8dadc',
     justifyContent: 'center',
     alignItems: 'center',
-    marginTop: 10,
+    height: '100%',
   },
   text: {
     fontSize: 24,
     marginBottom: 10,
     marginTop: 10,
+    color: 'white',
+    fontWeight: '800',
+    textAlign: 'center',
   },
   textInput: {
     height: 50,
@@ -154,9 +165,10 @@ borderWidth:2,padding:10,
   },
   navButtonText: {
     fontSize: 20,
-    color: '#6646ee',
+    color: 'black',
+    marginTop: 20,
   },
-  errorStyle: {
+  errorText: {
     color: 'red',
     fontSize: 15,
   },

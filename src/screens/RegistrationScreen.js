@@ -1,7 +1,7 @@
 import React, {useState, useContext} from 'react';
 import {Formik} from 'formik';
 import {AuthContext} from '../navigation/AuthProvider';
-import {View, Text, StyleSheet, TextInput, Button} from 'react-native';
+import {View, Text, StyleSheet, TextInput, Button,Pressable} from 'react-native';
 // import FormButton from '../../components/FormButton';
 // import FormInput from '../../components/FormInput';
 import * as yup from 'yup';
@@ -27,7 +27,7 @@ const SignupScreen = ({navigation}) => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.text}>Create an account</Text>
+      <Text style={styles.title}>Create an account</Text>
       {/* Form Inputs */}
 
       <Formik
@@ -68,13 +68,14 @@ const SignupScreen = ({navigation}) => {
             {errors.password && touched.password && (
               <Text style={styles.errorText}>{errors.password}</Text>
             )}
-            <Button
+            <Pressable
+              style={styles.btn}
               onPress={() => {
-                handleSubmit, register(values.email, values.password);
+                handleSubmit, register(values.email, values.password), navigation.navigate('Login')
               }}
-              title="Sigup"
-              disabled={!isValid}
-            />
+              disabled={!isValid}>
+              <Text style={styles.text}>Signup</Text>
+            </Pressable>
           </>
         )}
       </Formik>
@@ -83,13 +84,33 @@ const SignupScreen = ({navigation}) => {
 };
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: '#f5f5f5',
+    backgroundColor: '#a8dadc',
     justifyContent: 'center',
     alignItems: 'center',
+    height: '100%',
+  },
+  title: {
+    fontSize: 25,
+    alignItems: 'center',
+    fontWeight: '900',
+    color: 'black',
+  },
+  btn: {
+    borderRadius: 15,
+    borderWidth: 2,
+    padding: 1,
+    width: '60%',
+    color: '#f9f9f9',
+    backgroundColor: '#457b9d',
+    borderColor: 'gray',
   },
   text: {
     fontSize: 24,
     marginBottom: 10,
+    marginTop: 10,
+    color: 'white',
+    fontWeight: '800',
+    textAlign: 'center',
   },
   textInput: {
     height: 50,
