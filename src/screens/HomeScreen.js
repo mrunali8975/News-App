@@ -1,6 +1,7 @@
 import React, {useContext} from 'react';
 import FormButton from '../../components/FormButton';
 import {AuthContext} from '../navigation/AuthProvider';
+import Loading from '../../components/loading';
 import {
   View,
   Text,
@@ -23,6 +24,7 @@ const Homescreen = ({navigation}) => {
   const url = 'https://saurav.tech/NewsAPI/everything/cnn.json';
   const [name, setName] = useState('');
   const [refreshing, setRefresh] = useState(true);
+  const [timer,setTimer]= useState(true);
 
   // api calling
   const getData = async () => {
@@ -38,6 +40,9 @@ const Homescreen = ({navigation}) => {
   };
   // mount the data
   useEffect(() => {
+    setTimeout(() => {
+      setTimer(false);
+    }, 1000);
     getData();
   }, []);
   const {height, width} = Dimensions.get('window');
@@ -45,7 +50,7 @@ const Homescreen = ({navigation}) => {
 
   return (
     <View style={{marginTop: 5,}}>
-      <View style={styles.container}>
+      {timer? <Loading/> :<View style={styles.container}>
         {refreshing ? <ActivityIndicator /> : null}
 
         <View style={{flex:1,flexDirection:'row',justifyContent:'space-between',marginBottom:50}}>
@@ -95,7 +100,8 @@ const Homescreen = ({navigation}) => {
             </View>
           )}
         />
-      </View>
+      </View>}
+      
     </View>
   );
 };

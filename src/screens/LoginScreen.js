@@ -30,17 +30,15 @@ export default function LoginScreen({navigation}) {
       .required('Email Address is Required'),
     password: yup
       .string()
+      .min(8, ({min}) => `Password must be at least ${min} characters`)
       .required('Password is required'),
   });
 
   return (
     <View style={styles.container}>
-      <Image
-        source={{
-          uri: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRntg-JsZoMsj4dO_h8eves6NntF1N0xx74EYcwbuEviq1FO0tt9m7bKvuxn8OozlspqSE&usqp=CAU',
-        }}
-        style={styles.loginImage}
-      />
+      <Image source={require('/home/mambhore/React Native/demofirebase/assets/images.jpeg')}
+       style={styles.loginImage}/>
+     
       <Text style={styles.title}>NEWS INDIA</Text>
 
       {/* Form Input */}
@@ -83,7 +81,7 @@ export default function LoginScreen({navigation}) {
               <Text style={styles.errorText}>{errors.password}</Text>
             )}
             {/* login function called from authprovider */}
-          
+           
             <Pressable
               style={styles.btn}
               onPress={() => {
@@ -110,14 +108,13 @@ export default function LoginScreen({navigation}) {
 
 const styles = StyleSheet.create({
   loginImage: {
-    marginTop: 1,
-    width: 200,
-    height: 200,
+    width: 100,
+    height: 100,
     marginBottom: 10,
   },
 
   title: {
-    fontSize: 40,
+    fontSize: 35,
     alignItems: 'center',
     fontWeight: '900',
     color: 'black',

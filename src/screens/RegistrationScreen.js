@@ -71,7 +71,7 @@ const SignupScreen = ({navigation}) => {
             <Pressable
               style={styles.btn}
               onPress={() => {
-                handleSubmit, register(values.email, values.password), navigation.navigate('Login')
+                handleSubmit, register(values.email, values.password),navigation.navigate('Login');
               }}
               disabled={!isValid}>
               <Text style={styles.text}>Signup</Text>

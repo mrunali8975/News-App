@@ -2,9 +2,11 @@ import React, {createContext, useState} from 'react';
 import {Alert} from 'react-native';
 import auth from '@react-native-firebase/auth';
 import { useEffect } from 'react/cjs/react.production.min';
+import Homescreen from '../screens/HomeScreen';
+import { NavigationContainer } from '@react-navigation/native';
 // createContext provide authentication options
 export const AuthContext = createContext({});
-export const AuthProvider = ({children}) => {
+export const AuthProvider = ({children,navigation}) => {
   const [user, setUser] = useState(null);
  
 
@@ -18,16 +20,19 @@ export const AuthProvider = ({children}) => {
         login: async (email, password) => {
           try {
             await auth().signInWithEmailAndPassword(email, password);
-
+            
           } catch (e) {
             console.log(e);
             alert('User Not Found !!');
            
           }
         },
+      
         register: async (email, password) => {
           try {
             await auth().createUserWithEmailAndPassword(email, password);
+            await auth().signOut();
+
           } catch (e) {
             console.log(e);
           }
