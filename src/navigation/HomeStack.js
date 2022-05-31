@@ -4,7 +4,7 @@ import HomeScreen from '../screens/HomeScreen';
 // function implent stack navigation pattern
 
 import SeachProduct from '../screens/SeachProduct';
-
+import Imagepicker from '../screens/imagepicker';
 const Stack = createStackNavigator(); 
 export default function HomeStack() {
   return (
@@ -15,6 +15,8 @@ export default function HomeStack() {
     }}
     >
       <Stack.Screen name='Home' component={HomeScreen} 
+      />
+      <Stack.Screen name='Imagepicker' component={Imagepicker} 
       />
       <Stack.Screen name='SeachProduct' component={SeachProduct} 
       />
