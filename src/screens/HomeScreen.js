@@ -2,6 +2,8 @@ import React, {useContext} from 'react';
 import FormButton from '../../components/FormButton';
 import {AuthContext} from '../navigation/AuthProvider';
 import Loading from '../../components/loading';
+import Drawer from './drawer';
+
 import {
   View,
   Text,
@@ -20,8 +22,8 @@ import {FlatGrid} from 'react-native-super-grid';
 import {useState, useEffect} from 'react';
 import {FlatList} from 'react-native-gesture-handler';
 import {setLocale} from 'yup';
-import {VirtualizedListCellContextProvider} from 'react-native/Libraries/Lists/VirtualizedListContext';
-
+import { NavigationContainer } from '@react-navigation/native';
+import Imagepicker from './imagepicker';
 const RECORDS_PER_PAGE = 4;
 
 const Homescreen = ({navigation}) => {
@@ -31,7 +33,7 @@ const Homescreen = ({navigation}) => {
   const {user, logout} = useContext(AuthContext);
 
   const [refreshing, setRefresh] = useState(true);
-
+//  const drawer= createDrawerNavigator();
 
   // const url = 'https://saurav.tech/NewsAPI/everything/cnn.json';
   // const url = ' https://newsapi.org/v2/top-headlines?country=us&apiKey=93988075ae1e45f1b8600f705c798e83';
@@ -46,7 +48,7 @@ const Homescreen = ({navigation}) => {
       .then(response => response.json())
       .then(resjson => {
         setNews(resjson.articles);
-        // console.log('json => ', news)
+        // console.log('json => ', news.description)
         setisLoading(false);
       })
       .catch(e => {
@@ -69,6 +71,8 @@ const Homescreen = ({navigation}) => {
 
   // mount the data
   useEffect(() => {
+    let abortController = new AbortController();  
+
     try {
       setisLoading(true);
     getnewsData();
@@ -76,7 +80,10 @@ const Homescreen = ({navigation}) => {
     } catch (error) {
       console.log('useeffect',error)
     }
-    
+    return ()=>
+    {
+      abortController.abort();
+    }
   }, [pageCurrent]);
   
   const handleLoadMore = () => {
@@ -90,10 +97,10 @@ const Homescreen = ({navigation}) => {
   };
   const renderFooter = () => {
     return isLoading ? (
-      <View>
-        <ActivityIndicator size="large" />
-      </View>
-    ) : <Text>Loading</Text>;
+    null
+    ) : (  <View>
+      <ActivityIndicator size="large" />
+    </View>);
   };
 
   const RenderItem = ({item}) => {
@@ -105,10 +112,9 @@ const Homescreen = ({navigation}) => {
           }}
           style={{width: width * 0.4, height: height * 0.2}}
         />
-        <View style={{marginLeft: 10}}>
+        <View style={{marginLeft: 10,}}>
           <Text style={styles.titletext}>{item.title}</Text>
-
-          <Text>{item.description}</Text>
+          <Text style={{marginBottom:10}}>{item.description}</Text>
         </View>
       </View>
     );
@@ -117,9 +123,9 @@ const Homescreen = ({navigation}) => {
     <View style={{marginTop: 5}}>
       {
         <View style={styles.container}>
-          {/* {refreshing ? <ActivityIndicator /> : null} */}
+          {  isLoading ? <ActivityIndicator /> : 
 
-          <View
+            <View
             style={{
               flex: 1,
               flexDirection: 'row',
@@ -127,6 +133,8 @@ const Homescreen = ({navigation}) => {
               marginBottom: 50,
             }}>
             {/* Calling logout method from firebase */}
+
+            
 
 
             <Pressable onPress={() => navigation.navigate('Imagepicker')}>
@@ -175,9 +183,14 @@ const Homescreen = ({navigation}) => {
               </Text>
             </Pressable>
           </View>
+      }
+      
+
+
           {/* Grid view */}
 
           <FlatList
+          style={{marginBottom:50}}
             ListFooterComponent={renderFooter}
             onEndReached={handleLoadMore}
             onEndReachedThreshold={0.5}
@@ -185,7 +198,8 @@ const Homescreen = ({navigation}) => {
             renderItem={RenderItem}
           />
         </View>
-      }
+}
+      
     </View>
   );
 };

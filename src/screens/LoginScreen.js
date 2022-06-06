@@ -12,87 +12,106 @@ import {
   Button,
   Pressable,
   Image,
+  ActivityIndicator,
 } from 'react-native';
-import FormButton from '../../components/FormButton';
-import * as yup from 'yup';
+
+
+
+
+
+const isValidObjField = obj => {
+  return Object.values(obj).every(value => value.trim());
+};
+const updateError = (error, stateUpdater) => {
+  stateUpdater(error);
+  setTimeout(() => {
+    stateUpdater('');
+  }, 2500);
+};
+
+const isValidEmail = value => {
+  let rjx = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,4})+$/;
+  return rjx.test(value);
+};
+
 
 export default function LoginScreen({navigation}) {
   const {login} = useContext(AuthContext); //authcontext by firebase
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-
-  // validation for login
-
-  const loginValidationSchema = yup.object().shape({
-    email: yup
-      .string()
-      .email('Please enter valid email')
-      .required('Email Address is Required'),
-    password: yup
-      .string()
-      .min(8, ({min}) => `Password must be at least ${min} characters`)
-      .required('Password is required'),
+  
+  const [userInfo, setUserinfo] = useState({
+    email: '',
+    password: '',
   });
+
+  const [error, setError] = useState('');
+  const {email, password} = userInfo;
+  const handleOnchangeText = (value, fieldname) => {
+    userInfo['email'];
+    userInfo['password'];
+    setUserinfo({...userInfo, [fieldname]: value});
+  }; 
+  const isValidForm = () => {
+    if (!isValidObjField(userInfo))
+      return updateError('Required all fields', setError);
+    if (!isValidEmail(email)) return updateError('Inavalid Email', setError);
+    if (!password.trim())
+      return updateError('password  is required', setError);
+    return true;
+  };
+  const submitForm = () => {
+    if (isValidForm()) {
+      return true;
+    }
+  };
+
+
 
   return (
     <View style={styles.container}>
-      <Image source={require('/home/mambhore/React Native/demofirebase/assets/images.jpeg')}
-       style={styles.loginImage}/>
-     
+      <Image
+        source={require('/home/mambhore/React Native/demofirebase/assets/images.jpeg')}
+        style={styles.loginImage}
+      />
+
       <Text style={styles.title}>NEWS INDIA</Text>
+      {error ? <Text style={{color:'red',fontSize:18,textAlign:'center'}}>{error}</Text>:null}
 
       {/* Form Input */}
-      <Formik
-        validationSchema={loginValidationSchema}
-        initialValues={{email: '', password: ''}}
-        onSubmit={values => console.log(values)}>
-        {({
-          handleChange,
-          handleBlur,
-          handleSubmit,
-          values,
-          errors,
-          touched,
-          isValid,
-        }) => (
+     
           <>
             <TextInput
               name="email"
+              autoCapitalize='none'
               placeholder="Email Address"
               style={styles.textInput}
-              onChangeText={handleChange('email')}
-              onBlur={handleBlur('email')}
-              value={values.email}
+              onChangeText={value => handleOnchangeText(value, 'email')}
+              value={email}
               keyboardType="email-address"
             />
-            {errors.email && touched.email && (
-              <Text style={styles.errorText}>{errors.email}</Text>
-            )}
+          
             <TextInput
               name="password"
+              autoCapitalize='none'
               placeholder="Password"
               style={styles.textInput}
-              onChangeText={handleChange('password')}
-              onBlur={handleBlur('password')}
-              value={values.password}
+              onChangeText={value => handleOnchangeText(value, 'password')}
+              value={password}
               secureTextEntry
             />
-            {errors.password && touched.password && (
-              <Text style={styles.errorText}>{errors.password}</Text>
-            )}
+            
             {/* login function called from authprovider */}
-           
+
             <Pressable
               style={styles.btn}
               onPress={() => {
-                handleSubmit, login(values.email, values.password);
-              }}
-              disabled={!isValid}>
-              <Text style={styles.text}>Login</Text>
+                if (submitForm()) {
+                  login(email, password), navigation.navigate('Home');
+                }
+              }}>
+            <Text style={styles.text}>Login</Text>
             </Pressable>
           </>
-        )}
-      </Formik>
+     
 
       {/* navigation.navigate() accepts the value of the screen to navigate to sign up page, */}
       <TouchableOpacity

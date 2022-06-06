@@ -4,10 +4,19 @@ import auth from '@react-native-firebase/auth';
 import { useEffect } from 'react/cjs/react.production.min';
 import Homescreen from '../screens/HomeScreen';
 import { NavigationContainer } from '@react-navigation/native';
+import Loading from '../../components/loading';
+import {
+ 
+  Text,
+  ToastAndroid
+ 
+} from 'react-native';
 // createContext provide authentication options
 export const AuthContext = createContext({});
 export const AuthProvider = ({children,navigation}) => {
   const [user, setUser] = useState(null);
+
+ 
  
 
   return (
@@ -22,8 +31,9 @@ export const AuthProvider = ({children,navigation}) => {
             await auth().signInWithEmailAndPassword(email, password);
             
           } catch (e) {
-            console.log(e);
-            alert('User Not Found !!');
+            
+             
+           
            
           }
         },
@@ -31,10 +41,17 @@ export const AuthProvider = ({children,navigation}) => {
         register: async (email, password) => {
           try {
             await auth().createUserWithEmailAndPassword(email, password);
-            await auth().signOut();
+          
+            // shotoastmsg();
+            ToastAndroid.show('Registered successfully')
+
+             auth().signOut();
+            
+
 
           } catch (e) {
             console.log(e);
+            alert(e)
           }
         },
         logout: async () => {

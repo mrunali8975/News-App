@@ -1,27 +1,65 @@
 import React, {useState, useContext} from 'react';
 import {Formik} from 'formik';
 import {AuthContext} from '../navigation/AuthProvider';
-import {View, Text, StyleSheet, TextInput, Button,Pressable} from 'react-native';
-// import FormButton from '../../components/FormButton';
-// import FormInput from '../../components/FormInput';
-import * as yup from 'yup';
-
+import {
+  View,
+  Text,
+  StyleSheet,
+  ToastAndroid,
+  TextInput,
+  Button,
+  Pressable,
+  Dimensions,
+} from 'react-native';
 
 // validation of input data
-const loginValidationSchema = yup.object().shape({
-  email: yup
-    .string()
-    .email('Please enter valid email')
-    .required('Email Address is Required'),
-  password: yup
-    .string()
-    .min(8, ({min}) => `Password must be at least ${min} characters`)
-    .required('Password is required'),
-});
+const isValidObjFiels = obj => {
+  return Object.values(obj).every(value => value.trim());
+};
+const updateError = (error, stateUpdater) => {
+  stateUpdater(error);
+  setTimeout(() => {
+    stateUpdater('');
+  }, 2500);
+};
+
+const isValidEmail = value => {
+  let rjx = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,4})+$/;
+  return rjx.test(value);
+};
 
 const SignupScreen = ({navigation}) => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [userInfo, setUserinfo] = useState({
+    email: '',
+    password: '',
+  });
+  const [error, setError] = useState('');
+  const {email, password} = userInfo;
+  const handleOnchangeText = (value, fieldname) => {
+    userInfo['email'];
+    userInfo['password'];
+    setUserinfo({...userInfo, [fieldname]: value});
+  };
+  const isValidForm = () => {
+    if (!isValidObjFiels(userInfo))
+      return updateError('Required all field', setError);
+    if (!isValidEmail(email)) return updateError('Invalid Email', setError);
+    if (!password.trim() || password.length < 8)
+      return updateError('password length is less than 8', setError);
+    return true;
+  };
+  const submitForm = () => {
+    if (isValidForm()) {
+      return true;
+    }
+  };
+  const shotoastmsg=()=>
+  {
+   
+    ToastAndroid.show("Registerd successfully")
+
+  }
+
   // Authcontext calling register function
   const {register} = useContext(AuthContext);
 
@@ -29,56 +67,48 @@ const SignupScreen = ({navigation}) => {
     <View style={styles.container}>
       <Text style={styles.title}>Create an account</Text>
       {/* Form Inputs */}
+      {error ? (
+        <Text style={{color: 'red', fontSize: 18, textAlign: 'center'}}>
+          {error}
+        </Text>
+      ) : null}
 
-      <Formik
-        validationSchema={loginValidationSchema}
-        initialValues={{email: '', password: ''}}
-        onSubmit={values => console.log(values)}>
-        {({
-          handleChange,
-          handleBlur,
-          handleSubmit,
-          values,
-          errors,
-          touched,
-          isValid,
-        }) => (
-          <>
-            <TextInput
-              name="email"
-              placeholder="Email Address"
-              style={styles.textInput}
-              onChangeText={handleChange('email')}
-              onBlur={handleBlur('email')}
-              value={values.email}
-              keyboardType="email-address"
-            />
-            {errors.email && touched.email && (
-              <Text style={styles.errorText}>{errors.email}</Text>
-            )}
-            <TextInput
-              name="password"
-              placeholder="Password"
-              style={styles.textInput}
-              onChangeText={handleChange('password')}
-              onBlur={handleBlur('password')}
-              value={values.password}
-              secureTextEntry
-            />
-            {errors.password && touched.password && (
-              <Text style={styles.errorText}>{errors.password}</Text>
-            )}
-            <Pressable
-              style={styles.btn}
-              onPress={() => {
-                handleSubmit, register(values.email, values.password),navigation.navigate('Login');
-              }}
-              disabled={!isValid}>
-              <Text style={styles.text}>Signup</Text>
-            </Pressable>
-          </>
-        )}
-      </Formik>
+      <>
+        <TextInput
+          multiline={true}
+          autoCapitalize="none"
+          name="email"
+          placeholder="Email Address"
+          style={styles.textInput}
+          onChangeText={value => handleOnchangeText(value, 'email')}
+        
+          value={email}
+          keyboardType="email-address"
+        />
+
+        <TextInput
+          autoCapitalize="none"
+          name="password"
+          placeholder="Password"
+          style={styles.textInput}
+          onChangeText={value => handleOnchangeText(value, 'password')}
+          value={password}
+          secureTextEntry
+        />
+
+        <Pressable
+          style={styles.btn}
+          onPress={() => {
+            if (submitForm()) {
+              register(email, password), navigation.navigate('Login')
+              
+            }
+            
+          }}>
+
+          <Text style={styles.text}>Signup</Text>
+        </Pressable>
+      </>
     </View>
   );
 };
@@ -113,7 +143,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   textInput: {
-    height: 50,
+    height: 60,
     width: '60%',
     fontSize: 15,
     textAlign: 'center',
