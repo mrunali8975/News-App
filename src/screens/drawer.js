@@ -4,10 +4,13 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import Homescreen from './HomeScreen';
 import Imagepicker from './imagepicker';
-import SeachProduct from './SeachProduct'
+import SeachProduct from './SeachProduct';
+import 'react-native-gesture-handler';
 
-const Drawer = () => {
-    const Drawer=createDrawerNavigator();
+const Drawer=createDrawerNavigator();
+
+
+const MyDrawer = () => {
   return (
     <NavigationContainer>
         <Drawer.Navigator initialRouteName='Home'> 
@@ -20,4 +23,4 @@ const Drawer = () => {
   )
 }
 
-export default Drawer;
+export default MyDrawer;

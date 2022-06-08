@@ -55,7 +55,7 @@ export default function LoginScreen({navigation}) {
       return updateError('Required all fields', setError);
     if (!isValidEmail(email)) return updateError('Inavalid Email', setError);
     if (!password.trim())
-      return updateError('password  is required', setError);
+      return updateError('Password  is required', setError);
     return true;
   };
   const submitForm = () => {
@@ -105,7 +105,7 @@ export default function LoginScreen({navigation}) {
               style={styles.btn}
               onPress={() => {
                 if (submitForm()) {
-                  login(email, password), navigation.navigate('Home');
+                  login(email, password);
                 }
               }}>
             <Text style={styles.text}>Login</Text>

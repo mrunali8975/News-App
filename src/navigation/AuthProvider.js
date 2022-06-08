@@ -15,6 +15,7 @@ import {
 export const AuthContext = createContext({});
 export const AuthProvider = ({children,navigation}) => {
   const [user, setUser] = useState(null);
+  
 
  
  
@@ -30,20 +31,22 @@ export const AuthProvider = ({children,navigation}) => {
           try {
             await auth().signInWithEmailAndPassword(email, password);
             
+
           } catch (e) {
             
+             console.log(e)
+         ToastAndroid.show('no internet connection',ToastAndroid.LONG)
              
-           
-           
+
           }
         },
       
         register: async (email, password) => {
           try {
             await auth().createUserWithEmailAndPassword(email, password);
-          
+            ToastAndroid.showWithGravity('Regise',ToastAndroid.SHORT,ToastAndroid.TOP,25,50)
+
             // shotoastmsg();
-            ToastAndroid.show('Registered successfully')
 
              auth().signOut();
             
@@ -56,7 +59,9 @@ export const AuthProvider = ({children,navigation}) => {
         },
         logout: async () => {
           try {
+            alert("Do you want to log out")
             await auth().signOut();
+            
           } catch (e) {
             console.error(e);
           }

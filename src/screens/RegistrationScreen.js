@@ -53,7 +53,7 @@ const SignupScreen = ({navigation}) => {
       return true;
     }
   };
-  const shotoastmsg=()=>
+  const showtoastmsg=()=>
   {
    
     ToastAndroid.show("Registerd successfully")

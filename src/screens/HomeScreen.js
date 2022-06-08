@@ -2,7 +2,8 @@ import React, {useContext} from 'react';
 import FormButton from '../../components/FormButton';
 import {AuthContext} from '../navigation/AuthProvider';
 import Loading from '../../components/loading';
-import Drawer from './drawer';
+import {AiOutlineLogout} from 'react-icons/ai';
+import Icon from 'react-native-vector-icons/FontAwesome';
 
 import {
   View,
@@ -22,18 +23,20 @@ import {FlatGrid} from 'react-native-super-grid';
 import {useState, useEffect} from 'react';
 import {FlatList} from 'react-native-gesture-handler';
 import {setLocale} from 'yup';
-import { NavigationContainer } from '@react-navigation/native';
 import Imagepicker from './imagepicker';
+import SeachProduct from './SeachProduct';
+import {NavigationContainer} from '@react-navigation/native';
+import {createDrawerNavigator} from '@react-navigation/drawer';
+//
 const RECORDS_PER_PAGE = 4;
 
 const Homescreen = ({navigation}) => {
   const [news, setNews] = useState([]);
   const [pageCurrent, setpageCurrent] = useState(1);
   const {height, width} = Dimensions.get('window');
-  const {user, logout} = useContext(AuthContext);
 
   const [refreshing, setRefresh] = useState(true);
-//  const drawer= createDrawerNavigator();
+  //  const Drawer= createDrawerNavigator();
 
   // const url = 'https://saurav.tech/NewsAPI/everything/cnn.json';
   // const url = ' https://newsapi.org/v2/top-headlines?country=us&apiKey=93988075ae1e45f1b8600f705c798e83';
@@ -71,36 +74,35 @@ const Homescreen = ({navigation}) => {
 
   // mount the data
   useEffect(() => {
-    let abortController = new AbortController();  
+    let abortController = new AbortController();
 
     try {
       setisLoading(true);
-    getnewsData();
-      
+      getnewsData();
     } catch (error) {
-      console.log('useeffect',error)
+      console.log('useeffect', error);
     }
-    return ()=>
-    {
+    return () => {
       abortController.abort();
-    }
+    };
   }, [pageCurrent]);
-  
+
   const handleLoadMore = () => {
-   
-    if((pageCurrent + 1) <= (news.length) / RECORDS_PER_PAGE){
-      setpageCurrent((pageCurrent) => pageCurrent + 1);
+    if (pageCurrent + 1 <= news.length / RECORDS_PER_PAGE) {
+      setpageCurrent(pageCurrent => pageCurrent + 1);
       setisLoading(true);
       console.log('pageCurrent', pageCurrent);
     }
-    
   };
   const renderFooter = () => {
-    return isLoading ? (
-    null
-    ) : (  <View>
-      <ActivityIndicator size="large" />
-    </View>);
+    return isLoading ? null : (
+      <View>
+        <ActivityIndicator size="large" />
+      </View>
+    );
+  };
+  const iconButton = () => {
+    alert('hello facebook button');
   };
 
   const RenderItem = ({item}) => {
@@ -112,94 +114,26 @@ const Homescreen = ({navigation}) => {
           }}
           style={{width: width * 0.4, height: height * 0.2}}
         />
-        <View style={{marginLeft: 10,}}>
+        <View style={{marginLeft: 10}}>
           <Text style={styles.titletext}>{item.title}</Text>
-          <Text style={{marginBottom:10}}>{item.description}</Text>
+          <Text>{item.description}</Text>
         </View>
       </View>
     );
   };
   return (
-    <View style={{marginTop: 5}}>
-      {
-        <View style={styles.container}>
-          {  isLoading ? <ActivityIndicator /> : 
-
-            <View
-            style={{
-              flex: 1,
-              flexDirection: 'row',
-              justifyContent: 'space-between',
-              marginBottom: 50,
-            }}>
-            {/* Calling logout method from firebase */}
-
-            
-
-
-            <Pressable onPress={() => navigation.navigate('Imagepicker')}>
-              <Text
-                style={{
-                  height: 35,
-                  width: '100%',
-                  fontSize: 15,
-                  fontWeight: '800',
-                  padding: 7,
-                  textAlign: 'center',
-                  borderRadius: 10,
-                  borderWidth: 2,
-                }}>
-               Add Image
-              </Text>
-            </Pressable>
-
-            <Pressable onPress={() => navigation.navigate('SeachProduct')}>
-              <Text
-                style={{
-                  height: 35,
-                  width: '100%',
-                  fontSize: 15,
-                  fontWeight: '800',
-                  padding: 7,
-                  textAlign: 'center',
-                  borderRadius: 10,
-                  borderWidth: 2,
-                }}>
-                Search Data
-              </Text>
-            </Pressable>
-            <Pressable onPress={() => logout()}>
-              <Text
-                style={{
-                  height: 35,
-                  width: '100%',
-                  fontSize: 15,
-                  fontWeight: '800',
-                  padding: 6,
-                  borderRadius: 10,
-                  borderWidth: 2,
-                }}>
-                Logout
-              </Text>
-            </Pressable>
-          </View>
-      }
-      
-
-
-          {/* Grid view */}
-
-          <FlatList
-          style={{marginBottom:50}}
-            ListFooterComponent={renderFooter}
-            onEndReached={handleLoadMore}
-            onEndReachedThreshold={0.5}
-            data={news}
-            renderItem={RenderItem}
-          />
-        </View>
-}
-      
+    <View style={styles.container}>
+      {isLoading ? (
+        <ActivityIndicator />
+      ) : (
+        <FlatList
+          style={{marginBottom: 10}}
+          onEndReached={handleLoadMore}
+          onEndReachedThreshold={0.5}
+          data={news}
+          renderItem={RenderItem}
+        />
+      )}
     </View>
   );
 };
@@ -207,7 +141,7 @@ const styles = StyleSheet.create({
   container: {
     marginTop: 12,
     marginVertical: 15,
-    marginBottom: 10,
+    // marginBottom: 10,
     marginHorizontal: 15,
   },
   titleimage: {
